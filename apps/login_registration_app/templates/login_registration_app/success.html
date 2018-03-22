@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Logged In</title>
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'login_registration_app/style.css' %}">
+    </head>
+    <body>
+        <div>
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li><h2>{{ message }}</h2></li>
+                {% endfor %}
+                <li>Successfully registered or logged in!</li>
+            </ul>
+            {% endif %}
+
+            <form action="{% url 'index' %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Back">
+            </form>
+        </div>
+    </body>
+</html>
