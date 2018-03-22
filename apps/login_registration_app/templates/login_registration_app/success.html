@@ -16,11 +16,18 @@
                 <li>Successfully registered or logged in!</li>
             </ul>
             {% endif %}
-
-            <form action="{% url 'index' %}" method="POST">
+            <div>
+            
+            </div>
+            <form action="/" method="POST">
                 {% csrf_token %}
                 <input type="submit" value="Back">
             </form>
+
+            <form action="/logout" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" value="Logout">
+                </form>
         </div>
     </body>
 </html>

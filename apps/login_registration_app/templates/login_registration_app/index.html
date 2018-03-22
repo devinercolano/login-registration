@@ -16,8 +16,8 @@
     <h1>Registration Form</h1>
     <form action='{% url 'register' %}' method='post'>
         {% csrf_token %}
-        First Name : <input type='text' name='firstName'>
-        Last Name : <input type='text' name='lastName'>
+        First Name : <input type='text' name='first_name'>
+        Last Name : <input type='text' name='last_name'>
         Email : <input type='email' name='email'>
         Password : <input type='password' name='password'>
         Confirm Password: <input type='password' name='confirmPassword'>
