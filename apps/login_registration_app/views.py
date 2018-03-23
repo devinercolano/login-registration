@@ -38,12 +38,9 @@ def login(request):
         for tag, error in response.iteritems():
             messages.error(request, error, extra_tags=tag)
         request.session['user_id'] = User.objects.get(email = request.POST['email']).id
-        print "user id: ", request.session['user_id']
         return redirect ('success')
 
 def logout(request):
-    print "session at the beginning of logout: ", request.session
     request.session.flush()
-    print "session at the end of logout: ", request.session
     return redirect ('index')
 

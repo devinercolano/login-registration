@@ -12,82 +12,82 @@ passwordNumRegEx = re.compile(r'[0-9]+')
 class UserManager(models.Manager):
     def validation(self, postData):
         response = {}
-        errors = {}
+        messages = {}
 
         errorFlag = False
         if len(postData['first_name']) < 2:
-            errors["first_name"]=("first name cannot be empty!")
+            messages["first_name"]=("first name cannot be empty!")
             errorFlag = True
         elif postData['first_name'].isalpha() == False :
-            errors["first_name"]= ("First name must contain only alphabetic characters!")
+            messages["first_name"]= ("First name must contain only alphabetic characters!")
             errorFlag = True
 
         if len(postData['last_name']) < 2:
-            errors["last_name"] = ("Last name cannot be empty!", 'error')
+            messages["last_name"] = ("Last name cannot be empty!", 'error')
             errorFlag = True
         elif postData['last_name'].isalpha() == False :
-            errors["last_name"]= ("Last name must contain only alphabetic characters!")
+            messages["last_name"]= ("Last name must contain only alphabetic characters!")
             errorFlag = True
 
         if len(postData['email']) < 1:
-            errors["email"]=("email cannot be empty!")
+            messages["email"]=("email cannot be empty!")
             errorFlag = True
         elif not emailRegEx.match(postData['email']):
-            errors["email"]=("Invalid Email Address!")
+            messages["email"]=("Invalid Email Address!")
             errorFlag = True
 
         if len(postData['password']) < 1 :
-            errors["password"]=("Password cannot be empty!")
+            messages["password"]=("Password cannot be empty!")
             errorFlag = True
         elif len(postData['password']) <= 8:
-            errors["password"]=("Password must be longer than 8 characters")
+            messages["password"]=("Password must be longer than 8 characters")
             errorFlag = True
 
         if postData['password'] != postData['confirmPassword'] :
-            errors["password"]=("Password confirmation and password entries must match!")
+            messages["password"]=("Password confirmation and password entries must match!")
             errorFlag = True
 
         if not passwordCharUppercaseRegEx.search(postData['password']) :
             errorFlag = True
-            errors["password"]=("Password must contain at least 1 uppercase letter")
+            messages["password"]=("Password must contain at least 1 uppercase letter")
 
         if not passwordNumRegEx.search(postData['password']) :
             errorFlag = True
-            errors["password"]=("Password must contain at least 1 number")   
+            messages["password"]=("Password must contain at least 1 number")   
 
         if User.objects.filter(email = postData['email']):
-                errors["email"]=("Error! Duplicate email")
+                messages["email"]=("Error! Duplicate email")
                 errorFlag = True
         if errorFlag == False :
             hashed = bcrypt.hashpw(postData['password'].encode(), bcrypt.gensalt())
             user = User.objects.create(first_name = postData['first_name'], last_name = postData['last_name'], email = postData['email'], password = hashed)
             response['user']= user
         
-        response['error']=errors
+        response['message']= messages
         response['errorFlag'] = errorFlag
         
         return response
 
     def verifyUserLogin(self, postData):
-        errors = {}
+        messages = {}
         response = {}
         errorFlag = False
         email_address = User.objects.filter(email=postData['email'])
         print "email address: ", email_address
         if len(email_address) < 1 :
-            errors['login'] = ("Unsuccessful login. Incorrect email")
+            messages['login'] = ("Unsuccessful login. Incorrect email")
             errorFlag = True
         else : 
             hashed = User.objects.get(email=postData['email']).password
             if not bcrypt.checkpw(postData['password'].encode(), hashed.encode()):
-                errors['login'] = ("Unsuccessful login. Incorrect password")
+                messages['login'] = ("Unsuccessful login. Incorrect password")
                 errorFlag = True            
         
         if errorFlag == False :
-            errors['success'] = ("Welcome" + User.objects.get(email = postData['email']).first_name + "!")
-            print "errors in verifyUserLogin: ", errors
+            messages['success'] = ("Welcome" + User.objects.get(email = postData['email']).first_name + "!")
+            print "messages in verifyUserLogin: ", messages
         
-        response['error']= errors
+        response['message']= messages
         response['errorFlag'] = errorFlag
 
         return response
